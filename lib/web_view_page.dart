@@ -23,69 +23,77 @@ class _WebViewPageState extends State<WebViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Google WebView'),
-      ),
-      body: WillPopScope(
-        onWillPop: ()async{
-          print("onWillPop");
-          print(webViewController?.canGoBack());
-          bool stauts = await webViewController?.canGoBack() ?? false;
-          print(stauts);
-          if(stauts){
-            webViewController?.goBack();
-            return false;
-          }
-          else{
-            return true;
-          }
-        },
-        child: Column(
-          children: [
-            Text(progress.toString()),
-            LinearProgressIndicator(
-              value: progress / 100,
-              color: Colors.red,
-            ),
-            Expanded(
-              child: InAppWebView(
-                key: webViewKey,
-                // initialUrlRequest: URLRequest(url: WebUri('https://www.google.com')),
-                initialUrlRequest: URLRequest(url: WebUri('https://crm.software100.com.mm/panels')),
-                onWebViewCreated: (controller) {
-                  webViewController = controller;
-                },
-                shouldOverrideUrlLoading: (controller, navigationAction) async {
-                  var uri = navigationAction.request.url!;
-              
-                  if (!["http", "https", "file", "chrome", "data", "javascript", "about"]
-                      .contains(uri.scheme)) {
-                    // Handle external URLs here (e.g., open in the device's browser)
-                    // You might want to use url_launcher for this:
-                    // if (await canLaunchUrl(uri)) {
-                    //   await launchUrl(uri);
-                    //   return NavigationActionPolicy.CANCEL;
-                    // }
-              
-                    return NavigationActionPolicy.ALLOW; //or CANCEL depending on your need.
-                  }
-                  return NavigationActionPolicy.ALLOW;
-                },
-                onLoadStop: (controller, url) async {
-              
-                },
-                onProgressChanged: (controller, webProgress) {
-                  print("onProgressChanged");
-                  print(progress);
-                  setState(() {
-                    progress = webProgress;
-                  });
-                },
+      // appBar: AppBar(
+      //   title: Text('Google WebView'),
+      // ),
+      body: SafeArea(
+        child: WillPopScope(
+          onWillPop: ()async{
+            print("onWillPop");
+            print(webViewController?.canGoBack());
+            bool stauts = await webViewController?.canGoBack() ?? false;
+            print(stauts);
+            if(stauts){
+              webViewController?.goBack();
+              return false;
+            }
+            else{
+              return true;
+            }
+          },
+          child: Column(
+            children: [
+              if(progress != 100) Stack(
+                alignment: Alignment.center, // Center the children within the Stack
+                children: [
+                  CircularProgressIndicator(),
+                  Text(progress.toString() + " %"),
+                ],
               ),
-            ),
-          ],
+              if(progress != 100) LinearProgressIndicator(
+                value: progress / 100,
+                color: Colors.red,
+              ),
+              Expanded(
+                child: InAppWebView(
+                  key: webViewKey,
+                  // initialUrlRequest: URLRequest(url: WebUri('https://www.google.com')),
+                  initialUrlRequest: URLRequest(url: WebUri(widget.url)),
+                  onWebViewCreated: (controller) {
+                    webViewController = controller;
+                  },
+                  shouldOverrideUrlLoading: (controller, navigationAction) async {
+                    var uri = navigationAction.request.url!;
+                
+                    if (!["http", "https", "file", "chrome", "data", "javascript", "about"]
+                        .contains(uri.scheme)) {
+                      // Handle external URLs here (e.g., open in the device's browser)
+                      // You might want to use url_launcher for this:
+                      // if (await canLaunchUrl(uri)) {
+                      //   await launchUrl(uri);
+                      //   return NavigationActionPolicy.CANCEL;
+                      // }
+                
+                      return NavigationActionPolicy.ALLOW; //or CANCEL depending on your need.
+                    }
+                    return NavigationActionPolicy.ALLOW;
+                  },
+                  onLoadStop: (controller, url) async {
+                
+                  },
+                  onProgressChanged: (controller, webProgress) {
+                    print("onProgressChanged");
+                    print(progress);
+                    setState(() {
+                      progress = webProgress;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        
         ),
-
       ),
         bottomNavigationBar: BottomAppBar(
           child: Row(
