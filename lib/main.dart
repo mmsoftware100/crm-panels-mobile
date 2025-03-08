@@ -1,3 +1,4 @@
+import 'package:crm/web_view_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -65,6 +66,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+      // Navigator.push(context, WebViewPage(url: "https://google.com"));
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WebViewPage(url: "https://google.com"),
+        ),
+      );
     });
   }
 
