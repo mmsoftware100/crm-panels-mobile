@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: const WebViewPage(url: "https://crm.software100.com.mm/panels")
+      home: const WebViewPage(url: "https://crm.myanmarlink.net/panels")
     );
   }
 }
